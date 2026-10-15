@@ -167,10 +167,13 @@ public class Lanzador {
 
     private static void mostrarPuntajes(List<Juego> juegos, Scanner sc) {
         Juego.limpiar();
-        System.out.println("=== MEJORES PUNTAJES (esta sesión) ===");
+        System.out.println("=== MEJORES PUNTAJES (Top 3, esta sesión) ===");
         for (Juego j : juegos) {
-            System.out.println(j.getNombre() + ": " + j.getMejorPuntaje());
+            System.out.println();
+            System.out.println("--- " + j.getNombre() + " ---");
+            System.out.println(j.getTopFormateado());
         }
+        System.out.println();
         Juego.pausa(sc);
     }
 }

@@ -1,6 +1,7 @@
 package juegos.spaceinvaders;
 
 import juegos.core.Juego;
+import juegos.core.Puntaje;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,16 +24,25 @@ public class SpaceInvaders extends Juego {
     }
 
     @Override
+    protected Puntaje[] puntajesIniciales() {
+        return new Puntaje[]{
+                new Puntaje("ACE", 850),
+                new Puntaje("MAX", 520),
+                new Puntaje("ZOE", 300)
+        };
+    }
+
+    @Override
     public String getReglas() {
         return "Eres la nave (^) en la parte inferior. Los invasores bajan poco a poco.\n"
-             + "Cada turno escribes un comando y presionas Enter:\n"
-             + "  a = izquierda     d = derecha     f = disparar\n"
-             + "  Enter (vacío) = esperar     q = abandonar\n"
-             + "  Puedes combinar hasta 3 letras, por ejemplo: aaf\n"
-             + "Solo puedes tener un disparo en el aire a la vez.\n"
-             + "Puntaje por invasor: M = 30, W = 20, A = 10. Limpiar una oleada da +50 x oleada.\n"
-             + "Pierdes una vida si un disparo enemigo (!) te alcanza (tienes " + VIDAS + ").\n"
-             + "Si los invasores llegan a tu fila, pierdes de inmediato.";
+                + "Cada turno escribes un comando y presionas Enter:\n"
+                + "  a = izquierda     d = derecha     f = disparar\n"
+                + "  Enter (vacío) = esperar     q = abandonar\n"
+                + "  Puedes combinar hasta 3 letras, por ejemplo: aaf\n"
+                + "Solo puedes tener un disparo en el aire a la vez.\n"
+                + "Puntaje por invasor: M = 30, W = 20, A = 10. Limpiar una oleada da +50 x oleada.\n"
+                + "Pierdes una vida si un disparo enemigo (!) te alcanza (tienes " + VIDAS + ").\n"
+                + "Si los invasores llegan a tu fila, pierdes de inmediato.";
     }
 
     private void nuevaOleada(int oleada) {

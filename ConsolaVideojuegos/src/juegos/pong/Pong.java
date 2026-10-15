@@ -1,6 +1,7 @@
 package juegos.pong;
 
 import juegos.core.Juego;
+import juegos.core.Puntaje;
 import java.util.Scanner;
 
 /** Pong: tú (izquierda) contra la computadora (derecha). */
@@ -12,14 +13,23 @@ public class Pong extends Juego {
     }
 
     @Override
+    protected Puntaje[] puntajesIniciales() {
+        return new Puntaje[]{
+                new Puntaje("ACE", 120),
+                new Puntaje("MAX", 95),
+                new Puntaje("ZOE", 70)
+        };
+    }
+
+    @Override
     public String getReglas() {
         return "Controlas la pala izquierda (#). La computadora controla la derecha.\n"
-             + "Cada turno escribes un comando y presionas Enter:\n"
-             + "  w = subir la pala     s = bajar la pala\n"
-             + "  Enter (vacío) = quedarte quieto     q = abandonar\n"
-             + "  Puedes combinar hasta 2 letras, por ejemplo: ww\n"
-             + "Puntaje: +1 por cada rebote tuyo, +10 por cada gol y +50 si ganas.\n"
-             + "Gana quien llegue primero a " + META + " goles.";
+                + "Cada turno escribes un comando y presionas Enter:\n"
+                + "  w = subir la pala     s = bajar la pala\n"
+                + "  Enter (vacío) = quedarte quieto     q = abandonar\n"
+                + "  Puedes combinar hasta 2 letras, por ejemplo: ww\n"
+                + "Puntaje: +1 por cada rebote tuyo, +10 por cada gol y +50 si ganas.\n"
+                + "Gana quien llegue primero a " + META + " goles.";
     }
 
     @Override

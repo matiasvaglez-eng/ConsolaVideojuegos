@@ -12,13 +12,15 @@ import java.util.Scanner;
  * 2. Extiende esta clase.
  * 3. Usa un constructor sin parámetros.
  * 4. Implementa getReglas() y jugar(Scanner).
+ * 5. (Opcional) Sobrescribe puntajesIniciales() para dar un Top 3 inicial.
  *
  * El lanzador detecta automáticamente el juego, por lo que no es necesario
  * editar Lanzador.java para registrarlo.
  */
 public abstract class Juego {
+    private static final int TOP = 3;
     private final String nombre;
-    private int mejorPuntaje;
+    private TablaPuntajes tabla;
     protected final Random azar = new Random();
 
     protected Juego(String nombre) {
@@ -32,8 +34,33 @@ public abstract class Juego {
         return nombre;
     }
 
+    /** Mejor puntaje del juego (primer lugar del top). */
     public final int getMejorPuntaje() {
-        return mejorPuntaje;
+        return tabla().mejor();
+    }
+
+    /** Top 3 del juego ya formateado para mostrar en pantalla. */
+    public final String getTopFormateado() {
+        return tabla().formatear();
+    }
+
+    /**
+     * Puntajes que el juego trae de fábrica. Los juegos pueden sobrescribirlo;
+     * si no lo hacen, su top empieza vacío.
+     */
+    protected Puntaje[] puntajesIniciales() {
+        return new Puntaje[0];
+    }
+
+    /** La tabla se crea al usarse por primera vez, ya con los puntajes iniciales. */
+    private TablaPuntajes tabla() {
+        if (tabla == null) {
+            tabla = new TablaPuntajes(TOP);
+            for (Puntaje p : puntajesIniciales()) {
+                tabla.agregar(p);
+            }
+        }
+        return tabla;
     }
 
     /** Reglas mostradas desde el menú universal del juego. */
@@ -58,7 +85,9 @@ public abstract class Juego {
         while (!volver) {
             limpiar();
             System.out.println("=== " + nombre.toUpperCase() + " ===");
-            System.out.println("Mejor puntaje: " + mejorPuntaje);
+            System.out.println("--- TOP 3 ---");
+            System.out.println(tabla().formatear());
+            System.out.println();
             System.out.println("1. Jugar");
             System.out.println("2. Ver reglas");
             System.out.println("0. Volver al menú principal");
@@ -76,22 +105,44 @@ public abstract class Juego {
         }
     }
 
-    /** Punto común para ejecutar y guardar el récord de cualquier juego. */
+    /** Punto común para ejecutar cualquier juego y registrar su puntaje en el top. */
     private void iniciarPartida(Scanner sc) {
         try {
             int puntaje = jugar(sc);
             System.out.println();
             System.out.println("Puntaje final: " + puntaje);
-            if (puntaje > mejorPuntaje) {
-                mejorPuntaje = puntaje;
-                System.out.println("¡Nuevo récord!");
-            }
+            registrarPuntaje(sc, puntaje);
         } catch (RuntimeException e) {
             // Evita que un error de un juego cierre toda la consola.
             System.out.println();
             System.out.println("El juego terminó por un error controlado: " + e.getMessage());
         }
         pausa(sc);
+    }
+
+    /**
+     * Sistema de puntuación UNIVERSAL: si el puntaje entra al Top 3 pide el nombre
+     * y actualiza la tabla. Funciona igual para cualquier juego.
+     */
+    private void registrarPuntaje(Scanner sc, int puntaje) {
+        TablaPuntajes t = tabla();
+        if (!t.entra(puntaje)) {
+            System.out.println("No alcanzaste el Top 3. Necesitas más de " + t.minimoParaEntrar() + " puntos.");
+            return;
+        }
+
+        boolean primerLugar = puntaje > t.mejor();
+        System.out.println(primerLugar ? "¡NUEVO RÉCORD! Superaste el primer lugar." : "¡Entraste al Top 3!");
+        System.out.print("Escribe tu nombre: ");
+        String nombreJugador = leerTexto(sc);
+        if (nombreJugador.length() > 12) {
+            nombreJugador = nombreJugador.substring(0, 12);
+        }
+
+        int pos = t.agregar(new Puntaje(nombreJugador, puntaje));
+        System.out.println();
+        System.out.println("Quedaste en el puesto " + pos + ". Top 3 actualizado:");
+        System.out.println(t.formatear());
     }
 
     private void mostrarReglas(Scanner sc) {
@@ -105,6 +156,11 @@ public abstract class Juego {
 
     public static String leer(Scanner sc) {
         return sc.hasNextLine() ? sc.nextLine().trim().toLowerCase() : "q";
+    }
+
+    /** Lee una línea respetando mayúsculas (por ejemplo, para nombres). */
+    public static String leerTexto(Scanner sc) {
+        return sc.hasNextLine() ? sc.nextLine().trim() : "";
     }
 
     public static void pausa(Scanner sc) {

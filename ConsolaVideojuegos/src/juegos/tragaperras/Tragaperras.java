@@ -1,6 +1,7 @@
 package juegos.tragaperras;
 
 import juegos.core.Juego;
+import juegos.core.Puntaje;
 
 import java.util.Scanner;
 
@@ -18,14 +19,23 @@ public class Tragaperras extends Juego {
     }
 
     @Override
+    protected Puntaje[] puntajesIniciales() {
+        return new Puntaje[]{
+                new Puntaje("ACE", 650),
+                new Puntaje("MAX", 320),
+                new Puntaje("ZOE", 180)
+        };
+    }
+
+    @Override
     public String getReglas() {
         return "Comienzas con $" + SALDO_INICIAL + ".\n"
-             + "Cada giro cuesta $" + COSTO_GIRO + ".\n"
-             + "Presiona Enter para girar. Escribe r para retirarte o q para salir.\n"
-             + "Tres 7 = premio de $500.\n"
-             + "Tres simbolos iguales (excepto 7) = premio de $100.\n"
-             + "Dos simbolos iguales = premio de $15.\n"
-             + "El puntaje final es el saldo que te quede.";
+                + "Cada giro cuesta $" + COSTO_GIRO + ".\n"
+                + "Presiona Enter para girar. Escribe r para retirarte o q para salir.\n"
+                + "Tres 7 = premio de $500.\n"
+                + "Tres simbolos iguales (excepto 7) = premio de $100.\n"
+                + "Dos simbolos iguales = premio de $15.\n"
+                + "El puntaje final es el saldo que te quede.";
     }
 
     @Override
