@@ -5,7 +5,7 @@ Requisito: JDK de Java 11 o superior.
 
 Estructura:
   src/consola/                    -> lanzador principal
-  src/juegos/core/                -> clase base universal Juego
+  src/juegos/core/                -> clase base universal Juego, Puntaje y TablaPuntajes
   src/juegos/pong/               -> Pong
   src/juegos/spaceinvaders/      -> Space Invaders
   src/juegos/tragaperras/        -> Tragaperras
@@ -22,6 +22,25 @@ IMPORTANTE: LOS JUEGOS NO DEBEN SOBRESCRIBIR start()
 -----------------------------------------------------
 El metodo start() es universal y ya esta implementado en Juego.
 Cada juego solamente debe implementar getReglas() y jugar(Scanner).
+
+SISTEMA DE PUNTUACION UNIVERSAL (TOP 3)
+---------------------------------------
+Cada juego tiene su propio Top 3, manejado por la clase base Juego.
+Al terminar una partida, Juego revisa el puntaje devuelto por jugar():
+  - Si entra al Top 3, pide el nombre del jugador y actualiza la tabla.
+  - Si no entra, muestra cuantos puntos hacen falta.
+  - Un puntaje de 0 nunca entra. En empate se queda arriba el mas antiguo.
+El Top 3 se ve al entrar a cada juego y en la opcion P del menu principal.
+Los puntajes duran solo mientras la consola esta abierta.
+
+Los juegos NO necesitan escribir codigo de puntuacion: solo devolver el puntaje en jugar().
+Opcional: para dar un Top 3 inicial, sobrescribe puntajesIniciales():
+
+   @Override
+   protected Puntaje[] puntajesIniciales() {
+       return new Puntaje[]{ new Puntaje("ACE", 500), new Puntaje("MAX", 300) };
+   }
+(import juegos.core.Puntaje;). Si no lo sobrescribes, el Top 3 empieza vacio.
 
 COMO AGREGAR UN JUEGO NUEVO SIN MODIFICAR Lanzador.java
 --------------------------------------------------------
